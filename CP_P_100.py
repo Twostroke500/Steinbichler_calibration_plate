@@ -1,19 +1,30 @@
 # Generate a Steinbichler/Zeiss calibration plate, suitable for "Comet" 3D-Scanners. Save the pattern as a *.svg
-# Everything to this script was "reversed" trough the calibration file of the smallest CP_P100 calibration plate.
+# Everything to this script was "reversed" trough the calibration files of a CP_P_100 and CP_P_300 plate.
+# At this stage, i only own a CP_P_100 plate to get dimensions from, so this is a work in progress. Planned future work:
+# → correct implementation of different plate sizes
+# → implementation of better border margin control
+# → Plate manufacturing
+# → Plate checking through photogrammetry
+# → wirte a *.lst file of the plate
+# → calibration of a comet scanner system
 # 
-# Steinbichler calib-plates are a 100*100 grid pattern with 3 reference points in the middle
-# The different sizes of plates should be a subset of this 100*100 grid.
+# Steinbichler calib-plates are point grids with a corresponding calibration file containing the actual point coordinates.
+# Each point has its unique ID which refers to a 100*100 grid.
+# Dimensions relate to 3 reference points in the middle of the plate. Point ID 5050 is 0,0,0; ID 5053 is X,0,0; ID 5250 is X,Y,0 (3-2-1 alignment)
+# Differenz sizes of calibrations plates differ in point diameter, point spacing and number of points visible on the plate.
+# CP_P_100 has a 39x39 point grid with 5 mm spacing, CP_P_300 has a 61x61 grid with 10 mm spacing 
 #
-# Plates are photogrammetricly checked and actual point coordinates are written to a calibration file, which 
-# contains only visible points. Invisible points are left out.
+# Plates are checked with photogrammetry and actual point coordinates are written to a calibration file, which 
+# contains only visible points. The visible point IDs always refer to a 100x100 grid. Point-IDs not shown on the plate are skipped
 # Example: the CP_P_100 plate-file starts at point-ID 3131 and ends at ID 6970 in this structure:
 #  ID       X        ;  Y        ;  Z       ;
 #  6970	=	99.991337;	95.008696;	0.063444;
+# CP_P_300 contains the points ID 2020 to 8080
 #
 import drawsvg as draw
 # 
-d_punkte = 2 # diameter of the points in the grid. 2 mm, measured from a photo
-d_nullpunkte = 3.5 # diameter of the 3 reference points in the grids center. Roughly 4 mm, measured from a photo
+d_punkte = 1.5 # diameter of the points in the grid. 1.5mm for a CP_P_100, measured from a actual plate
+d_nullpunkte = 2.5 # diameter of the 3 reference points in the grids center. 2.5mm for CP_P_100, measured from a actual plate
 n_punkte = 100 # number of points in x and y. Must be 100 for the reference points in the middle to be placed correctly
 abstand = 5 # distance between the points
 randabstand = 2 # border margin of the plate
